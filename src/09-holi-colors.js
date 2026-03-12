@@ -54,21 +54,85 @@
  *   // red and blue objects are UNCHANGED
  */
 export function mixColors(color1, color2) {
-  // Your code here
+    // Your code here
+    if (!color1 || !color2) {
+        return null;
+    }
+    return {
+        name: `${color1.name}-${color2.name}`,
+        r: Math.round((color1.r + color2.r) / 2),
+        g: Math.round((color1.g + color2.g) / 2),
+        b: Math.round((color1.b + color2.b) / 2),
+    };
 }
 
 export function adjustBrightness(color, factor) {
-  // Your code here
+    // Your code here
+    if (!color || typeof factor !== "number" || Number.isNaN(factor)) {
+        return null;
+    }
+
+    return {
+        name: color.name,
+        r: Math.round(
+            color.r * factor > 255
+                ? 255
+                : color.r * factor < 0
+                  ? 0
+                  : color.r * factor,
+        ),
+        g: Math.round(
+            color.g * factor > 255
+                ? 255
+                : color.g * factor < 0
+                  ? 0
+                  : color.g * factor,
+        ),
+        b: Math.round(
+            color.b * factor > 255
+                ? 255
+                : color.b * factor < 0
+                  ? 0
+                  : color.b * factor,
+        ),
+    };
 }
 
 export function addToPalette(palette, color) {
-  // Your code here
+    // Your code here
+    if (!Array.isArray(palette)) {
+        return [color];
+    } else if (!color) {
+        return [...palette];
+    }
+    return [...palette, color];
 }
 
 export function removeFromPalette(palette, colorName) {
-  // Your code here
+    // Your code here
+    if (!Array.isArray(palette)) {
+        return [];
+    }
+    return palette.filter((color) => color.name !== colorName);
 }
 
 export function mergePalettes(palette1, palette2) {
-  // Your code here
+    // Your code here
+    if (!Array.isArray(palette1) && !Array.isArray(palette2)) {
+        return [];
+    }
+
+    const merged = !Array.isArray(palette1)
+        ? palette2
+        : !Array.isArray(palette2)
+          ? palette1
+          : [...palette1, ...palette2];
+    const result = [];
+    for (const color of merged) {
+        const found = result.some((obj) => obj.name === color.name);
+        if (!found) {
+            result.push(color);
+        }
+    }
+    return result;
 }

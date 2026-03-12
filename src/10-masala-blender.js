@@ -53,29 +53,60 @@
  *   // => { name: "Haldi", form: "powder", packed: true, label: "Haldi Masala" }
  */
 export function pipe(...fns) {
-  // Your code here
+    // Your code here
+    return (x) => {
+        return fns.reduce((acc, curr) => curr(acc), x);
+    };
 }
 
 export function compose(...fns) {
-  // Your code here
+    // Your code here
+    return (x) => {
+        return fns.reduceRight((acc, curr) => curr(acc), x);
+    };
 }
 
 export function grind(spice) {
-  // Your code here
+    // Your code here
+    return { ...spice, form: "powder" };
 }
 
 export function roast(spice) {
-  // Your code here
+    // Your code here
+    return { ...spice, roasted: true, aroma: "strong" };
 }
 
 export function mix(spice) {
-  // Your code here
+    // Your code here
+    return { ...spice, mixed: true };
 }
 
 export function pack(spice) {
-  // Your code here
+    // Your code here
+    return { ...spice, packed: true, label: `${spice.name} Masala` };
 }
 
 export function createRecipe(steps) {
-  // Your code here
+    // Your code here
+    if (!Array.isArray(steps) || steps.length === 0) {
+        return (x) => x;
+    }
+
+    const stepObj = {
+        grind: grind,
+        roast: roast,
+        mix: mix,
+        pack: pack,
+    };
+
+    return (x) => {
+        const result = steps.reduce((acc, curr) => {
+            if (stepObj[curr]) {
+                return stepObj[curr](acc);
+            } else {
+                return acc;
+            }
+        }, x);
+        return result;
+    };
 }

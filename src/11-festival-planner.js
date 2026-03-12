@@ -49,5 +49,67 @@
  *   mgr.getUpcoming("2025-01-01", 1); // => [{ name: "Republic Day", ... }]
  */
 export function createFestivalManager() {
-  // Your code here
+    // Your code here
+    let festivals = [];
+    const types = ["religious", "national", "cultural"];
+
+    function addFestival(name, date, type) {
+        if (
+            name === "" ||
+            typeof date !== "string" ||
+            !types.includes(type) ||
+            festivals.some((data) => data.name === name)
+        ) {
+            return -1;
+        }
+        festivals.push({ name, date, type });
+        return festivals.length;
+    }
+
+    function removeFestival(name) {
+        if (festivals.some((data) => data.name === name)) {
+            festivals = festivals.filter((fest) => fest.name !== name);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function getAll() {
+        return [...festivals];
+    }
+
+    function getByType(type) {
+        return festivals.filter((fest) => fest.type === type);
+    }
+
+    function getUpcoming(currentDate, n = 3) {
+        // use getTime and get date in ms
+        // convert currentDate in ms
+        const currentMs = new Date(currentDate).getTime();
+        let nextFests = festivals.filter((fest) => {
+            const festMs = new Date(fest.date).getTime();
+            if (festMs >= currentMs) {
+                return fest;
+            }
+        });
+        nextFests = nextFests.sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
+
+        return nextFests.slice(0, n);
+    }
+
+    function getCount() {
+        return festivals.length;
+    }
+
+    return {
+        addFestival,
+        removeFestival,
+        getAll,
+        getByType,
+        getUpcoming,
+        getCount,
+    };
 }

@@ -45,17 +45,83 @@
  *   // => [{ rating: 5 }, { rating: 3 }]
  */
 export function createFilter(field, operator, value) {
-  // Your code here
+    // Your code here
+    switch (operator) {
+        case ">":
+            return (obj) => {
+                if (obj[field] > value) {
+                    return true;
+                }
+            };
+        case "<":
+            return (obj) => {
+                if (obj[field] < value) {
+                    return true;
+                }
+            };
+        case ">=":
+            return (obj) => {
+                if (obj[field] >= value) {
+                    return true;
+                }
+            };
+        case "<=":
+            return (obj) => {
+                if (obj[field] <= value) {
+                    return true;
+                }
+            };
+        case "===":
+            return (obj) => {
+                if (obj[field] === value) {
+                    return true;
+                }
+            };
+
+        default:
+            return (obj) => false;
+    }
 }
 
 export function createSorter(field, order = "asc") {
-  // Your code here
+    // Your code here
+    if (order === "asc") {
+        return (a, b) => {
+            if (typeof a[field] === "string") {
+                return a[field].localeCompare(b[field]);
+            } else {
+                return a[field] - b[field];
+            }
+        };
+    } else {
+        return (a, b) => {
+            if (typeof a[field] === "string") {
+                return b[field].localeCompare(a[field]);
+            } else {
+                return b[field] - a[field];
+            }
+        };
+    }
 }
 
 export function createMapper(fields) {
-  // Your code here
+    // Your code here
+    return function (obj) {
+        // remove the field in this obj and return a newObj with remaining fields
+        const newObj = {};
+        for (const key in obj) {
+            if (fields.includes(key)) {
+                newObj[key] = obj[key];
+            }
+        }
+        return newObj;
+    };
 }
 
 export function applyOperations(data, ...operations) {
-  // Your code here
+    // Your code here
+    if (!Array.isArray(data)) {
+        return [];
+    }
+    return operations.reduce((result, curr) => curr(result), data);
 }
